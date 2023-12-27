@@ -1,7 +1,9 @@
 import java.sql.PreparedStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProdutosDAO {
 
@@ -28,9 +30,31 @@ public class ProdutosDAO {
             System.out.println("Erro ao inserir empresa: " + e.getMessage());
         }
     }
+    
+    public List<ProdutosDTO> getProdutos() {
+        String sql = "SELECT * FROM dados";
 
-    public ArrayList<ProdutosDTO> listarProdutos() {
-        return null;
+        try {
+            PreparedStatement stmt = this.conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            List<ProdutosDTO> listaProdutos = new ArrayList<>();
+
+            while (rs.next()) {
+                ProdutosDTO produtosDTO = new ProdutosDTO();
+
+                produtosDTO.setId(rs.getInt("id"));
+                produtosDTO.setNome(rs.getString("nome"));
+                produtosDTO.setValor(rs.getInt("valor"));
+                produtosDTO.setStatus(rs.getString("status"));
+
+                listaProdutos.add(produtosDTO);
+            }
+            return listaProdutos;
+        } 
+        catch (Exception e) {
+            return null;
+        }
     }
 
 }
