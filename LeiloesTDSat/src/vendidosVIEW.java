@@ -1,7 +1,14 @@
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
 public class vendidosVIEW extends javax.swing.JFrame {
+    
+    DefaultTableModel model;
 
     public vendidosVIEW() {
         initComponents();
+        preencherTabela();
     }
 
     @SuppressWarnings("unchecked")
@@ -104,4 +111,36 @@ public class vendidosVIEW extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tb_produtosVendidos;
     // End of variables declaration//GEN-END:variables
+
+    private void preencherTabela() {
+        ProdutosDAO produtosDAO = new ProdutosDAO();
+
+        List<ProdutosDTO> listaProdutos = produtosDAO.getProdutosVendidos();
+
+        DefaultTableModel tabelaProdutos = (DefaultTableModel) tb_produtosVendidos.getModel();
+
+        tb_produtosVendidos.setRowSorter(new TableRowSorter(tabelaProdutos));
+
+        for (ProdutosDTO p : listaProdutos) {
+            Object[] obj = new Object[]{
+                p.getId(),
+                p.getNome(),
+                p.getValor(),
+                "Vendido"
+            };
+            tabelaProdutos.addRow(obj);
+        }
+    }
+
+    public void adicionarProdutoVendido(ProdutosDTO produto) {
+        Object[] row = {
+            produto.getId(),
+            produto.getNome(),
+            produto.getValor(),
+            produto.getStatus()
+        };
+
+        model.addRow(row);
+        model.fireTableDataChanged();
+    }
 }
